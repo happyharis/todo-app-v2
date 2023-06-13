@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Card } from "react-bootstrap";
+import { TodoContext } from "../contexts/TodoContext";
 
 export default function TodoCard({ todo }) {
   const completed = todo.completed;
   const border = completed ? "success" : "danger";
   const [timer, setTimer] = useState(0);
   const [timerInterval, setTimerInterval] = useState(null);
+  const setTodos = useContext(TodoContext).setTodos;
 
   const startTimer = () => {
     if (timerInterval === null) {
@@ -25,6 +27,12 @@ export default function TodoCard({ todo }) {
     clearInterval(timerInterval);
     setTimerInterval(null);
     setTimer(0);
+  };
+
+  const deleteTodo = () => {
+    setTodos((prevTodos) =>
+      prevTodos.filter((prevTodo) => prevTodo.id !== todo.id)
+    );
   };
 
   useEffect(() => {
@@ -48,6 +56,9 @@ export default function TodoCard({ todo }) {
           </Button>
           <Button onClick={resetTimer} className="ms-2">
             <i className="bi bi-arrow-clockwise"></i>
+          </Button>
+          <Button variant="danger" onClick={deleteTodo} className="ms-2">
+            <i className="bi bi-trash3"></i>
           </Button>
         </Card.Body>
       </Card>
